@@ -12,6 +12,7 @@ diffusers
 accelerate
 sentencepiece
 protobuf
+hf_xet
 
 # Outros
 requests

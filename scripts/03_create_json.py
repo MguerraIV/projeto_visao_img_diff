@@ -6,7 +6,7 @@ import json
 import os
 
 class DifferenceCaptionGenerator:
-    def __init__(self, model_id="llava-hf/llava-v1.6-mistral-7b-hf", load_in_4bit=True):
+    def __init__(self, model_id="llava-hf/llava-v1.6-mistral-7b-hf", load_in_4bit=True, use_fast=True):
         """
         Inicializa o modelo LLaVA.
         4-bit quantization para caber em GPUs comuns (como T4 ou RTX 3060).
@@ -14,11 +14,11 @@ class DifferenceCaptionGenerator:
         print(f"Carregando VLM ({model_id})...")
         
         quantization_config = BitsAndBytesConfig(
-            load_in_4bit=True,
+            load_in_4bit=load_in_4bit,
             bnb_4bit_compute_dtype=torch.float16
         )
         
-        self.processor = LlavaNextProcessor.from_pretrained(model_id)
+        self.processor = LlavaNextProcessor.from_pretrained(model_id, use_fast=use_fast)
         self.model = LlavaNextForConditionalGeneration.from_pretrained(
             model_id, 
             quantization_config=quantization_config, 
@@ -31,11 +31,15 @@ class DifferenceCaptionGenerator:
         Gera uma descrição curta para um recorte de imagem.
         (Stage 1 do Paper: Object Labeling)
         """
-
         # Formato de prompt do LLaVA-NeXT/Mistral
         prompt = f"[INST] <image>\n{prompt_text} [/INST]"
-        
-        inputs = self.processor(prompt, image, return_tensors="pt").to(self.model.device)
+
+        inputs = self.processor(
+            text=prompt, 
+            images=image, 
+            return_tensors="pt", 
+            padding=True
+        ).to(self.model.device)
         
         output = self.model.generate(
             **inputs, 
@@ -44,8 +48,12 @@ class DifferenceCaptionGenerator:
         )
         
         decoded = self.processor.decode(output[0], skip_special_tokens=True)
-        # Limpeza básica para pegar só a resposta
-        response = decoded.split("[/INST]")[-1].strip()
+        
+        if "[/INST]" in decoded:
+            response = decoded.split("[/INST]")[-1].strip()
+        else:
+            response = decoded.strip()
+
         return response
 
     def create_dataset_entry(self, img_path_a, img_path_b, bbox):
@@ -68,20 +76,23 @@ class DifferenceCaptionGenerator:
         caption_2 = self.generate_description(crop_b, "Describe the main object in this image concisely.")
         
         # 3. Gerar a legenda da diferença (Stage 2 do paper)
-        # O paper sugere alimentar as legendas para o modelo gerar a diferença.
+        total_width = img_a.width + img_b.width + 20
+        max_height = max(img_a.height, img_b.height)
         
+        concat_img = Image.new('RGB', (total_width, max_height), (0, 0, 0))
+        concat_img.paste(img_a, (0, 0))
+        concat_img.paste(img_b, (img_a.width + 20, 0))
+        
+        # Alimentando o VLM com o contexto visual e as legendas textuais
         diff_prompt = (
-            f"The left image shows {caption_1}, while the right image shows {caption_2}. "
-            "Explain the difference in one sentence."
+            f"Analyse the left image and the right image (separated by the black vertical bar). What is the difference between the red bounding box area in each image?"
+            "Answer the question in a few concise sentences"
         )
 
-        
-        final_response = (
-            f"The left image shows {caption_1}, while the right image shows {caption_2}. "
-            f"The difference is explicitly in the object depicted."
-        )
+        print(" -> Gerando a explicação final da diferença via VLM...")
+        final_response = self.generate_description(concat_img, diff_prompt)
 
-        # 4. Montar o JSON final (Formato da Figura 9 do paper)
+        # 4. Montar o JSON final
         # Normalizar bbox para 0-1 (formato padrão LLaVA/Visual Genome)
         w, h = img_a.size
         norm_bbox = [
@@ -93,10 +104,10 @@ class DifferenceCaptionGenerator:
             "conversations": [
                 {
                     "from": "human",
-                    "value": "Analyze the left image and the right image. What is the difference between the red bounding box area in each image? Answer concisely."
+                    "value": "Analyse the left image and the right image (separated by the black vertical bar). What is the difference between the red bounding box area in each image? Answer the question in a few concise sentences"
                 },
                 {
-                    "from": "gpt",
+                    "from": "llm",
                     "value": final_response
                 }
             ],
@@ -109,16 +120,15 @@ class DifferenceCaptionGenerator:
         
         return entry
 
-# --- Script de Integração (Main) ---
 if __name__ == "__main__":
     base_dir = "data/raw_captions"
     detected_data = os.listdir(base_dir)
     
-    if not os.path.exists("data/generated_images"):
+    if not os.path.exists("data/caption_images"):
         print("Aviso: Imagens de exemplo não encontradas. O script vai falhar se não houver imagens reais.")
 
     try:
-        generator = DifferenceCaptionGenerator(load_in_4bit=True)
+        generator = DifferenceCaptionGenerator(load_in_4bit=True, use_fast=True)
         final_dataset = []
 
         for cont, json_name in enumerate(detected_data):
@@ -142,7 +152,6 @@ if __name__ == "__main__":
             else:
                 print("Imagem não encontrada, pulando...")
 
-        # Salvar Dataset Final
         os.makedirs("data/final_dataset", exist_ok=True)
         with open("data/final_dataset/img_diff_train.json", "w") as f:
             json.dump(final_dataset, f, indent=2)
@@ -150,5 +159,4 @@ if __name__ == "__main__":
         print("\nDataset Final Gerado em 'data/final_dataset/img_diff_train.json'")
         
     except Exception as e:
-        print(f"\nErro ao executar o modelo (provavelmente falta de memória ou modelo não baixado): {e}")
-        print("Dica: Certifique-se de ter 'bitsandbytes' instalado: pip install bitsandbytes")
+        print(f"\nErro ao executar o modelo: {e}")

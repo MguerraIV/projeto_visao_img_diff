@@ -1,0 +1,46 @@
+[
+  {
+    "conversations": [
+      {
+        "from": "human",
+        "value": "Analyse the left image and the right image (separated by the black vertical bar). What is the difference between the red bounding box area in each image? Answer the question in a few concise sentences"
+      },
+      {
+        "from": "llm",
+        "value": "The difference between the red bounding box area in the left and right images is that in the left image, the cat is inside the red box, while in the right image, the dog is inside the red box."
+      }
+    ],
+    "bbox": [
+      0.29,
+      0.29,
+      0.92,
+      0.77
+    ],
+    "captions1": "The main object in this image is a cat.",
+    "captions2": "The main object in this image is a dog.",
+    "image_left": "data/caption_images/left/caption_0.jpg",
+    "image_right": "data/caption_images/right/caption_0.jpg"
+  },
+  {
+    "conversations": [
+      {
+        "from": "human",
+        "value": "Analyse the left image and the right image (separated by the black vertical bar). What is the difference between the red bounding box area in each image? Answer the question in a few concise sentences"
+      },
+      {
+        "from": "llm",
+        "value": "The red bounding box area in the left image shows a silver car on the street, while in the right image, it shows a vintage white truck. The difference is that the left image includes the car, while the right image focuses on the truck"
+      }
+    ],
+    "bbox": [
+      0.09,
+      0.38,
+      0.91,
+      0.91
+    ],
+    "captions1": "The main object in this image is a silver car.",
+    "captions2": "The main object in this image is a vintage white truck.",
+    "image_left": "data/caption_images/left/caption_1.jpg",
+    "image_right": "data/caption_images/right/caption_1.jpg"
+  }
+]

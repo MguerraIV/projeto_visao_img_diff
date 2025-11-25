@@ -15,11 +15,14 @@ O pipeline foi implementado seguindo a metodologia do artigo, dividido em três 
 img-diff-repro/
 ├── data/
 │   ├── generated_images/   # Saída do Módulo A (Pares de Imagens)
-│   └── final_dataset/      # Saída do Módulo C (JSON Final)
-├── src/
-│   ├── generation/         # Scripts de geração (SDXL + Prompt Engineering)
-│   ├── processing/         # Scripts de detecção (FastSAM + CLIP + IoU Filter)
-│   └── captioning/         # Scripts de descrição (LLaVA-NeXT/1.5)
+│   ├── caption_images/     # Saída 1 do Módulo B (Pares de Imagens com bounding box)
+│   ├── raw_captions/       # Saída 2 do Módulo B (json com coordenadas e similaridade das imagens)
+│   └── final_dataset/      # Saída do Módulo C (JSON Final para treinamento de VLM)
+├── scripts/
+│   ├── 01_generate_pairs.py      # Scripts de geração (SDXL + Prompt Engineering)
+│   ├── 02_filter_differences.py  # Scripts de detecção (FastSAM + CLIP + IoU Filter)
+│   └── 03_create_json.py         # Scripts de descrição (LLaVA-NeXT/1.5)
+├── README.md               # Este arquivo
 └── requirements.txt        # Dependências do projeto
 ```
 
@@ -104,25 +107,31 @@ python /scripts/03_create_json.py
 
 O arquivo final segue o formato de Visual Instruction Tuning descrito no paper:
 
+<img src="data/exemplo_saida.jpg" width="600px" />
+
+
 ```json
 {
-  "image_left": "path/to/img_left.jpg",
-  "image_right": "path/to/img_right.jpg",
-  "bbox": [0.45, 0.20, 0.65, 0.50],
   "conversations": [
     {
       "from": "human",
-      "value": "Analyze the left image and the right image. What is the difference between the red bounding box area in each image?"
+      "value": "Analyse the left image and the right image (separated by the black vertical bar). What is the difference between the red bounding box area in each image? Answer the question in a few concise sentences"
     },
     {
-      "from": "gpt",
-      "value": "The left image shows a woman holding a black camera, while
-                the right image shows the same woman holding a stack of white plates. The difference is
-                that the woman is now holding plates instead of a camera."
+      "from": "llm",
+      "value": "The difference between the red bounding box area in the left and right images is that in the left image, the cat is inside the red box, while in the right image, the dog is inside the red box."
     }
   ],
-  "captions1": "A black camera.",
-  "captions2": "A stack of white plates."
+  "bbox": [
+    0.29,
+    0.29,
+    0.92,
+    0.77
+  ],
+  "captions1": "The main object in this image is a cat.",
+  "captions2": "The main object in this image is a dog.",
+  "image_left": "data/caption_images/left/caption_0.jpg",
+  "image_right": "data/caption_images/right/caption_0.jpg"
 }
 ```
 

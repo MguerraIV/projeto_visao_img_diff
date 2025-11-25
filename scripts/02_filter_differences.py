@@ -68,7 +68,7 @@ class DifferenceDetector:
                 x2, y2 = min(w, x2), min(h, y2)
                 
                 # Se a caixa for muito pequena, ignora (ruído)
-                if (x2 - x1) < 10 or (y2 - y1) < 10:
+                if (x2 - x1) < 100 or (y2 - y1) < 100:
                     continue
 
                 # 2. Recortar a mesma região nas duas imagens
@@ -118,6 +118,31 @@ class DifferenceDetector:
             differences = [d for d in differences if get_iou(current['bbox'], d['bbox']) < iou_thresh]
             
         return keep
+    
+    def draw_bounding_box(self, image_path, diffs):
+        img = cv2.imread(image_path)
+        
+        x1, y1, x2, y2 = diffs['bbox']
+        # Desenha retângulo VERMELHO
+        cv2.rectangle(img, (x1, y1), (x2, y2), (0, 0, 255), 2)
+
+        return img
+    
+
+    def save_pair(self, image_a, image_b, pair_id, diffs):
+        """Salva as imagens"""
+        output_dir = "data/caption_images"
+        path_a = os.path.join(output_dir, "left", f"caption_{pair_id}.jpg")
+        path_b = os.path.join(output_dir, "right", f"caption_{pair_id}.jpg")
+
+        img_a = self.draw_bounding_box(image_a, diffs)
+        cv2.imwrite(path_a, img_a)
+
+        img_b = self.draw_bounding_box(image_b, diffs)
+        cv2.imwrite(path_b, img_b)
+
+        return path_a.replace("\\", "/"), path_b.replace("\\", "/")
+        
 
 if __name__ == "__main__":
     base_dir = "data/generated_images"
@@ -140,24 +165,19 @@ if __name__ == "__main__":
             
             if diffs:
                 best_diff = min(diffs, key=lambda x: x["similarity"])
-                best_diff['img_a'] = img_a_path
-                best_diff['img_b'] = img_b_path
 
                 json_name = f"pair_{cont}.json"
                 json_output = os.path.join(output_dir, json_name)
                 json_output = json_output.replace("\\", "/")
+
+                bounded_img_a_path, bounded_img_b_path = detector.save_pair(img_a_path, img_b_path, cont, best_diff)
+                best_diff['img_a'] = bounded_img_a_path
+                best_diff['img_b'] = bounded_img_b_path
                 
                 with open(json_output, "w", encoding="utf-8") as f:
                     json.dump(best_diff, f, indent=4, ensure_ascii=False)
 
-                img = cv2.imread(img_b_path)
-                for d in diffs:
-                    x1, y1, x2, y2 = d['bbox']
-                    # Desenha retângulo VERMELHO (conforme Fig 4 do paper)
-                    cv2.rectangle(img, (x1, y1), (x2, y2), (0, 0, 255), 2)
-                
-                cv2.imwrite("debug_diff_result.jpg", img)
-                print("Imagem de debug salva como 'debug_diff_result.jpg'")
+                print("Imagens salvas em data/caption_images")
             
     except IndexError:
         print("Erro: Nenhuma imagem encontrada em 'data/generated_images'. Rode o script de geração primeiro.")
