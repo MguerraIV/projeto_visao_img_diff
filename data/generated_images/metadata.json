@@ -1,0 +1,16 @@
+[
+  {
+    "id": "pair_0",
+    "caption_left": "a photo of a cat sitting on a sofa",
+    "caption_right": "a photo of a dog sitting on a sofa",
+    "file_left": "data/generated_images\\left\\pair_0.jpg",
+    "file_right": "data/generated_images\\right\\pair_0.jpg"
+  },
+  {
+    "id": "pair_1",
+    "caption_left": "a car parked on the street",
+    "caption_right": "a truck parked on the street",
+    "file_left": "data/generated_images\\left\\pair_1.jpg",
+    "file_right": "data/generated_images\\right\\pair_1.jpg"
+  }
+]

@@ -1,0 +1,18 @@
+# Processamento de Imagem e Dados
+opencv-python
+matplotlib
+scipy
+pandas
+numpy
+Pillow
+
+# Deep Learning & Models (SDXL, LLaVA)
+transformers
+diffusers
+accelerate
+sentencepiece
+protobuf
+
+# Outros
+requests
+tqdm
