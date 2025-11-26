@@ -1,16 +1,23 @@
 [
   {
-    "id": "pair_0",
-    "caption_left": "a photo of a cat sitting on a sofa",
-    "caption_right": "a photo of a dog sitting on a sofa",
-    "file_left": "data/generated_images\\left\\pair_0.jpg",
-    "file_right": "data/generated_images\\right\\pair_0.jpg"
+    "id": "pair_2",
+    "caption_left": "a glass on the table",
+    "caption_right": "a bowl on the table",
+    "file_left": "data/generated_images\\left\\pair_2.jpg",
+    "file_right": "data/generated_images\\right\\pair_2.jpg"
   },
   {
-    "id": "pair_1",
-    "caption_left": "a car parked on the street",
-    "caption_right": "a truck parked on the street",
-    "file_left": "data/generated_images\\left\\pair_1.jpg",
-    "file_right": "data/generated_images\\right\\pair_1.jpg"
+    "id": "pair_3",
+    "caption_left": "a plane flying through the air",
+    "caption_right": "a helicopter flying through the air",
+    "file_left": "data/generated_images\\left\\pair_3.jpg",
+    "file_right": "data/generated_images\\right\\pair_3.jpg"
+  },
+  {
+    "id": "pair_4",
+    "caption_left": "a monkey holding an apple",
+    "caption_right": "a monkey holding an orange",
+    "file_left": "data/generated_images\\left\\pair_4.jpg",
+    "file_right": "data/generated_images\\right\\pair_4.jpg"
   }
 ]

@@ -83,7 +83,8 @@ def simulate_llm_replacement(original_caption):
         "glass": "bowl",
         "car": "truck",
         "apple": "orange",
-        "man": "woman"
+        "man": "woman",
+        "plane": "helicopter"
     }
     
     words = original_caption.split()
@@ -107,12 +108,14 @@ if __name__ == "__main__":
     original_captions = [
         "a photo of a cat sitting on a sofa",
         "a car parked on the street",
-        "a man holding an apple"
+        "a glass on the table",
+        "a plane flying through the air"
     ]
     
     metadata_log = []
     
     for i, caption_a in enumerate(original_captions):
+        i += 2
         # 1. Gerar a legenda modificada (Simulando LLM)
         caption_b = simulate_llm_replacement(caption_a)
         
