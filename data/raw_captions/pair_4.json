@@ -1,0 +1,11 @@
+{
+    "bbox": [
+        0,
+        49,
+        1024,
+        526
+    ],
+    "similarity": 0.765625,
+    "img_a": "data/caption_images/left/caption_4.jpg",
+    "img_b": "data/caption_images/right/caption_4.jpg"
+}

@@ -1,23 +1,37 @@
 [
   {
-    "id": "pair_2",
-    "caption_left": "a glass on the table",
-    "caption_right": "a bowl on the table",
-    "file_left": "data/generated_images\\left\\pair_2.jpg",
-    "file_right": "data/generated_images\\right\\pair_2.jpg"
+    "id": "pair_5",
+    "caption_left": "a bicycle leaning against a brick wall",
+    "caption_right": "a motorcycle leaning against a brick wall",
+    "file_left": "data/generated_images\\left\\pair_5.jpg",
+    "file_right": "data/generated_images\\right\\pair_5.jpg"
   },
   {
-    "id": "pair_3",
-    "caption_left": "a plane flying through the air",
-    "caption_right": "a helicopter flying through the air",
-    "file_left": "data/generated_images\\left\\pair_3.jpg",
-    "file_right": "data/generated_images\\right\\pair_3.jpg"
+    "id": "pair_6",
+    "caption_left": "a fresh apple placed on a wooden board",
+    "caption_right": "a fresh orange placed on a wooden board",
+    "file_left": "data/generated_images\\left\\pair_6.jpg",
+    "file_right": "data/generated_images\\right\\pair_6.jpg"
   },
   {
-    "id": "pair_4",
-    "caption_left": "a monkey holding an apple",
-    "caption_right": "a monkey holding an orange",
-    "file_left": "data/generated_images\\left\\pair_4.jpg",
-    "file_right": "data/generated_images\\right\\pair_4.jpg"
+    "id": "pair_7",
+    "caption_left": "a delicious pizza on a restaurant table",
+    "caption_right": "a delicious cake on a restaurant table",
+    "file_left": "data/generated_images\\left\\pair_7.jpg",
+    "file_right": "data/generated_images\\right\\pair_7.jpg"
+  },
+  {
+    "id": "pair_8",
+    "caption_left": "a large tree standing alone in a desert",
+    "caption_right": "a large cactus standing alone in a desert",
+    "file_left": "data/generated_images\\left\\pair_8.jpg",
+    "file_right": "data/generated_images\\right\\pair_8.jpg"
+  },
+  {
+    "id": "pair_9",
+    "caption_left": "a toy plane on a child's bedroom floor",
+    "caption_right": "a toy helicopter on a child's bedroom floor",
+    "file_left": "data/generated_images\\left\\pair_9.jpg",
+    "file_right": "data/generated_images\\right\\pair_9.jpg"
   }
 ]

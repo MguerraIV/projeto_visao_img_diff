@@ -79,12 +79,25 @@ def simulate_llm_replacement(original_caption):
     Para quesito de teste, vou usar um dicionário hardcoded simples.
     """
     replacements = {
+        # Animais
         "cat": "dog",
+        "horse": "cow",
+        "bird": "butterfly",
+        
+        # Objetos / Casa
         "glass": "bowl",
+        "chair": "sofa",
+        "laptop": "book",
+        
+        # Veículos
         "car": "truck",
+        "plane": "helicopter",
+        "bicycle": "motorcycle",
+        
+        # Comida / Natureza
         "apple": "orange",
-        "man": "woman",
-        "plane": "helicopter"
+        "tree": "cactus",
+        "pizza": "cake"
     }
     
     words = original_caption.split()
@@ -109,13 +122,16 @@ if __name__ == "__main__":
         "a photo of a cat sitting on a sofa",
         "a car parked on the street",
         "a glass on the table",
-        "a plane flying through the air"
+        "a plane flying through the air",
+        "a brown horse standing in a green field",
+        "a bicycle leaning against a brick wall",
+        "a large tree standing alone in a desert",
+        "a toy plane on a child's bedroom floor"
     ]
     
     metadata_log = []
     
     for i, caption_a in enumerate(original_captions):
-        i += 2
         # 1. Gerar a legenda modificada (Simulando LLM)
         caption_b = simulate_llm_replacement(caption_a)
         
